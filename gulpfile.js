@@ -39,6 +39,10 @@ const paths = {
     src: 'src/scss/bootstrap/*.scss',
     dest: 'dist/arquivos',
   },
+  styles_vendor: {
+    src: 'src/scss/vendor/*.scss',
+    dest: 'dist/arquivos',
+  },
   scripts_vendor: {
     src: ['src/js/vendor/*.js'],
     dest: 'dist/arquivos',
@@ -152,6 +156,22 @@ function scripts_vendor() {
     .pipe(browserSync.stream());
 }
 
+function styles_vendor() {
+  return gulp
+    .src(paths.styles_vendor.src)
+    .pipe(sourcemaps.init())
+    .pipe(sass())
+    .on('error', sass.logError)
+    .pipe(postcss([autoprefixer()]))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(paths.styles_vendor.dest))
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(postcss([autoprefixer(), cssnano()]))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(paths.styles_vendor.dest))
+    .pipe(browserSync.stream());
+}
+
 function reload() {
   browserSync.reload();
 }
@@ -168,6 +188,7 @@ function watch() {
   gulp.watch('./src/html/**/*.html').on('change', gulp.series(partials, html, reload));
   gulp.watch(paths.boots_styles.src, bootstrap_style);
   gulp.watch(paths.scripts_vendor.src, scripts_vendor);
+  gulp.watch(paths.styles_vendor.src, styles_vendor);
 }
 
 // Exposing the tasks is important for it's allowing to run it on the command line
@@ -184,8 +205,10 @@ exports.script = script;
 exports.image = image;
 // $ gulp bootstrap
 exports.bootstrap_style = bootstrap_style;
-// $ gulp script
+// $ gulp script_vendor
 exports.scriptsvendor = scripts_vendor;
+// $ gulp styles_vendor
+exports.styles_vendor = styles_vendor;
 // $ gulp serve
 exports.serve = gulp.parallel(
   partials,
@@ -195,9 +218,19 @@ exports.serve = gulp.parallel(
   image,
   bootstrap_style,
   scripts_vendor,
+  styles_vendor,
   watch
 );
 
-const build = gulp.parallel(partials, html, style, script, image, bootstrap_style, scripts_vendor);
+const build = gulp.parallel(
+  partials,
+  html,
+  style,
+  script,
+  image,
+  bootstrap_style,
+  scripts_vendor,
+  styles_vendor
+);
 // $ gulp
 gulp.task('default', build);
