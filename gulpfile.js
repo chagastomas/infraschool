@@ -36,11 +36,11 @@ const paths = {
     dest: 'dist/arquivos',
   },
   boots_styles: {
-    src: '/src/scss/bootstrap/*.scss',
+    src: 'src/scss/bootstrap/*.scss',
     dest: 'dist/arquivos',
   },
   scripts_vendor: {
-    src: ['/src/js/vendor/*.js'],
+    src: ['src/js/vendor/*.js'],
     dest: 'dist/arquivos',
   },
 };
