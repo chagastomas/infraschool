@@ -9,11 +9,20 @@ const gulp = require('gulp'),
   babel = require('gulp-babel'),
   imageMin = require('gulp-imagemin'),
   cache = require('gulp-cache'),
+  fileinclude = require('gulp-file-include'),
+  concat = require('gulp-concat'),
   browserSync = require('browser-sync').create(),
   bro = require('gulp-bro'),
   babelify = require('babelify');
 
 const paths = {
+  html: {
+    src: 'src/html/*.html',
+    dest: 'dist/',
+  },
+  partials: {
+    src: 'src/html/partials/**/*.html',
+  },
   styles: {
     src: 'src/scss/**/*.scss',
     dest: 'dist/arquivos',
@@ -27,18 +36,39 @@ const paths = {
     dest: 'dist/arquivos',
   },
   styles_vendor: {
-    src: 'vendor/scss/*.scss',
+    src: './src/vendor/scss/*.scss',
     dest: 'dist/arquivos',
   },
   boots_styles: {
-    src: 'vendor/scss/bootstrap/*.scss',
+    src: './src/vendor/scss/bootstrap/*.scss',
     dest: 'dist/arquivos',
   },
   scripts_vendor: {
-    src: ['vendor/js/*.js'],
+    src: ['./src/vendor/js/*.js'],
     dest: 'dist/arquivos',
   },
 };
+
+function html() {
+  return gulp
+    .src(paths.html.src)
+    .pipe(
+      fileinclude({
+        prefix: '@@',
+        basepath: '@file',
+      })
+    )
+    .pipe(gulp.dest(paths.html.dest));
+}
+
+function partials() {
+  return gulp.src(paths.partials.src).pipe(
+    fileinclude({
+      prefix: '@@',
+      basepath: '@file',
+    })
+  );
+}
 
 function style() {
   return gulp
@@ -148,13 +178,13 @@ function reload() {
 function watch() {
   browserSync.init({
     server: {
-      baseDir: './',
+      baseDir: './dist/',
     },
   });
   gulp.watch(paths.styles.src, style);
   gulp.watch(paths.scripts.src, script);
   gulp.watch(paths.images.src, image);
-  gulp.watch('*.html').on('change', reload);
+  gulp.watch('./src/html/**/*.html').on('change', gulp.series(partials, html, reload));
   gulp.watch(paths.styles_vendor.src, styles_vendor);
   gulp.watch(paths.boots_styles.src, bootstrap_style);
   gulp.watch(paths.scripts_vendor.src, scripts_vendor);
@@ -164,6 +194,8 @@ function watch() {
 
 // $ gulp watch
 exports.watch = watch;
+// $ gulp html
+exports.html = gulp.series(partials, html);
 // $ gulp style
 exports.style = style;
 // $ gulp script
@@ -178,15 +210,26 @@ exports.bootstrap_style = bootstrap_style;
 exports.scriptsvendor = scripts_vendor;
 // $ gulp serve
 exports.serve = gulp.parallel(
+  partials,
+  html,
   style,
   script,
   image,
-  watch,
+  styles_vendor,
+  bootstrap_style,
+  scripts_vendor,
+  watch
+);
+
+const build = gulp.parallel(
+  partials,
+  html,
+  style,
+  script,
+  image,
   styles_vendor,
   bootstrap_style,
   scripts_vendor
 );
-
-const build = gulp.parallel(style, script, image, styles_vendor, bootstrap_style, scripts_vendor);
 // $ gulp
 gulp.task('default', build);
