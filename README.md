@@ -44,11 +44,11 @@ Comando responsável pela build do projeto.
 	└── images
 	└── js
     └── vendor
-      ├── jquery.js
+      ├── slick.js
     ├── home.js
-    ├── slick.js
 	└── scss
     └── bootstrap
+    └── vendor
+      ├── slick.scss
     ├── home.scss
-    ├── slick.scss
 ```
