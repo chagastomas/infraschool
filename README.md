@@ -46,12 +46,9 @@ Comando responsável pela build do projeto.
 	└── scss
   └── vendor
 		└── js
-			└── jquery
-				├── jquery.min.js
-      └── slick
-				├── slick.min.js
+			├── jquery.min.js
+			├── slick.min.js
     └── scss
       └── bootstrap
-      └── slick
-				├── slick.scss
+			├── slick.scss
 ```
