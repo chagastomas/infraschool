@@ -35,16 +35,12 @@ const paths = {
     src: 'src/images/**/*',
     dest: 'dist/arquivos',
   },
-  styles_vendor: {
-    src: './src/vendor/scss/*.scss',
-    dest: 'dist/arquivos',
-  },
   boots_styles: {
-    src: './src/vendor/scss/bootstrap/*.scss',
+    src: '/src/scss/bootstrap/*.scss',
     dest: 'dist/arquivos',
   },
   scripts_vendor: {
-    src: ['./src/vendor/js/*.js'],
+    src: ['/src/js/vendor/*.js'],
     dest: 'dist/arquivos',
   },
 };
@@ -117,21 +113,6 @@ function image() {
     .pipe(browserSync.stream());
 }
 
-function styles_vendor() {
-  return gulp
-    .src(paths.styles_vendor.src)
-    .pipe(sourcemaps.init())
-    .pipe(sass())
-    .on('error', sass.logError)
-    .pipe(postcss([autoprefixer()]))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest(paths.styles_vendor.dest))
-    .pipe(rename({ suffix: '.min' }))
-    .pipe(postcss([autoprefixer(), cssnano()]))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest(paths.styles_vendor.dest));
-}
-
 function bootstrap_style() {
   return gulp
     .src(paths.boots_styles.src)
@@ -185,7 +166,6 @@ function watch() {
   gulp.watch(paths.scripts.src, script);
   gulp.watch(paths.images.src, image);
   gulp.watch('./src/html/**/*.html').on('change', gulp.series(partials, html, reload));
-  gulp.watch(paths.styles_vendor.src, styles_vendor);
   gulp.watch(paths.boots_styles.src, bootstrap_style);
   gulp.watch(paths.scripts_vendor.src, scripts_vendor);
 }
@@ -202,8 +182,6 @@ exports.style = style;
 exports.script = script;
 // $ gulp script
 exports.image = image;
-// $ gulp style vendor
-exports.styles_vendor = styles_vendor;
 // $ gulp bootstrap
 exports.bootstrap_style = bootstrap_style;
 // $ gulp script
@@ -215,21 +193,11 @@ exports.serve = gulp.parallel(
   style,
   script,
   image,
-  styles_vendor,
   bootstrap_style,
   scripts_vendor,
   watch
 );
 
-const build = gulp.parallel(
-  partials,
-  html,
-  style,
-  script,
-  image,
-  styles_vendor,
-  bootstrap_style,
-  scripts_vendor
-);
+const build = gulp.parallel(partials, html, style, script, image, bootstrap_style, scripts_vendor);
 // $ gulp
 gulp.task('default', build);

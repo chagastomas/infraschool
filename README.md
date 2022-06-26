@@ -43,12 +43,12 @@ Comando responsável pela build do projeto.
 		├── home.html
 	└── images
 	└── js
+    └── vendor
+      ├── jquery.js
+    ├── home.js
+    ├── slick.js
 	└── scss
-  └── vendor
-		└── js
-			├── jquery.min.js
-			├── slick.min.js
-    └── scss
-      └── bootstrap
-			├── slick.scss
+    └── bootstrap
+    ├── home.scss
+    ├── slick.scss
 ```
