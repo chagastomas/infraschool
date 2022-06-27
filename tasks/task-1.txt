@@ -1,0 +1,6 @@
+Task: Desenvolver o Header e o Footer da nossa HomePage.
+Priori: 
+	Usar Bootstrap. link: https://getbootstrap.com/docs/5.0/getting-started/introduction/
+	Usar SASS.
+	SubMenu com Hover.
+Cores, tamamho de fonte, espaçamento, ficam a seu critério.
